@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Inventory Management System - Part 1</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>📦 Inventory Manager</h1>
+            <p>TypeScript-based session storage</p>
+        </header>
+
+        <div class="form-section">
+            <h2>Add / Edit Item</h2>
+            <div class="form-grid">
+                <input type="text" id="itemName" placeholder="Item Name *" required>
+                <select id="category">
+                    <option value="Electronics">Electronics</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Tools">Tools</option>
+                    <option value="Miscellaneous">Miscellaneous</option>
+                </select>
+                <input type="number" id="quantity" placeholder="Quantity *" min="0" step="1" required>
+                <input type="number" id="price" placeholder="Price *" min="0" step="0.01" required>
+                <input type="text" id="supplier" placeholder="Supplier *" required>
+                <select id="stockStatus">
+                    <option value="In Stock">In Stock</option>
+                    <option value="Low Stock">Low Stock</option>
+                    <option value="Out of Stock">Out of Stock</option>
+                </select>
+                <select id="popular">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+                <input type="text" id="comment" placeholder="Comment (optional)">
+            </div>
+            <div class="button-group">
+                <button id="addBtn">➕ Add Item</button>
+                <button id="updateBtn">✏️ Update (by Name)</button>
+                <button id="deleteBtn">🗑️ Delete (by Name)</button>
+            </div>
+        </div>
+
+        <div class="action-section">
+            <div class="search-bar">
+                <input type="text" id="searchName" placeholder="Search by item name">
+                <button id="searchBtn">🔍 Search</button>
+                <button id="showAllBtn">📋 Show All</button>
+                <button id="showPopularBtn">⭐ Show Popular</button>
+            </div>
+        </div>
+
+        <div class="output-section">
+            <div id="messageArea" class="message"></div>
+            <div id="inventoryDisplay"></div>
+        </div>
+    </div>
+
+    <script src="inventory.js"></script>
+</body>
+</html>

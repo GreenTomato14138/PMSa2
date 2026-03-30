@@ -1,0 +1,23 @@
+<div class="home-container">
+  <h1>Welcome to Inventory Manager</h1>
+  <p>This application helps you manage your inventory items efficiently. All data is stored locally during your session.</p>
+
+  <div class="stats">
+    <div class="stat-card">
+      <h3>Total Items</h3>
+      <p>{{ allItemsCount }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Popular Items</h3>
+      <p>{{ popularItems.length }}</p>
+    </div>
+  </div>
+
+  <h2>⭐ Popular Items Preview</h2>
+  <app-item-list [items]="popularItems" [showActions]="false"></app-item-list>
+
+  <div class="quick-actions">
+    <a routerLink="/manage" class="btn">➕ Add New Item</a>
+    <a routerLink="/search" class="btn">🔍 Search Items</a>
+  </div>
+</div>

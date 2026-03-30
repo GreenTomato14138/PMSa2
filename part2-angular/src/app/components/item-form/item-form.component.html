@@ -1,0 +1,68 @@
+<div class="form-container">
+  <h2>Manage Inventory Items</h2>
+
+  <div *ngIf="message" [class]="'alert ' + (messageType === 'success' ? 'alert-success' : 'alert-error')">
+    {{ message }}
+  </div>
+
+  <!-- Add Item Form -->
+  <div class="card">
+    <h3>Add New Item</h3>
+    <div class="form-grid">
+      <input type="text" [(ngModel)]="newItem.name" placeholder="Item Name *" required>
+      <select [(ngModel)]="newItem.category">
+        <option *ngFor="let cat of categories" [value]="cat">{{cat}}</option>
+      </select>
+      <input type="number" [(ngModel)]="newItem.quantity" placeholder="Quantity *" min="0" step="1">
+      <input type="number" [(ngModel)]="newItem.price" placeholder="Price *" min="0" step="0.01">
+      <input type="text" [(ngModel)]="newItem.supplier" placeholder="Supplier *">
+      <select [(ngModel)]="newItem.stockStatus">
+        <option *ngFor="let status of stockStatuses" [value]="status">{{status}}</option>
+      </select>
+      <select [(ngModel)]="newItem.popular">
+        <option *ngFor="let pop of popularOptions" [value]="pop">{{pop}}</option>
+      </select>
+      <input type="text" [(ngModel)]="newItem.comment" placeholder="Comment (optional)">
+    </div>
+    <button (click)="addItem()" class="btn-primary">Add Item</button>
+  </div>
+
+  <!-- Update Item Form -->
+  <div class="card">
+    <h3>Update Existing Item</h3>
+    <div class="form-inline">
+      <input type="text" [(ngModel)]="updateName" placeholder="Item Name to Update *">
+      <input type="text" [(ngModel)]="updateData.name" placeholder="New Name (optional)">
+      <select [(ngModel)]="updateData.category">
+        <option [ngValue]="null">-- Category (no change) --</option>
+        <option *ngFor="let cat of categories" [value]="cat">{{cat}}</option>
+      </select>
+      <input type="number" [(ngModel)]="updateData.quantity" placeholder="New Quantity">
+      <input type="number" [(ngModel)]="updateData.price" placeholder="New Price">
+      <input type="text" [(ngModel)]="updateData.supplier" placeholder="New Supplier">
+      <select [(ngModel)]="updateData.stockStatus">
+        <option [ngValue]="null">-- Stock Status (no change) --</option>
+        <option *ngFor="let status of stockStatuses" [value]="status">{{status}}</option>
+      </select>
+      <select [(ngModel)]="updateData.popular">
+        <option [ngValue]="null">-- Popular (no change) --</option>
+        <option *ngFor="let pop of popularOptions" [value]="pop">{{pop}}</option>
+      </select>
+      <input type="text" [(ngModel)]="updateData.comment" placeholder="New Comment">
+    </div>
+    <button (click)="updateItem()" class="btn-warning">Update Item</button>
+  </div>
+
+  <!-- Delete Item Form -->
+  <div class="card">
+    <h3>Delete Item</h3>
+    <div class="form-inline">
+      <input type="text" [(ngModel)]="deleteName" placeholder="Item Name to Delete *">
+      <button (click)="deleteItem()" class="btn-danger">Delete Item</button>
+    </div>
+  </div>
+
+  <!-- Display All Items -->
+  <h3>All Inventory Items</h3>
+  <app-item-list [items]="allItems" [showActions]="true"></app-item-list>
+</div>

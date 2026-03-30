@@ -1,0 +1,37 @@
+.table-responsive {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+th {
+  background-color: #007bff;
+  color: white;
+}
+.btn-small {
+  padding: 4px 8px;
+  margin: 0 2px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-small.danger {
+  background: #dc3545;
+}
+.btn-small:hover {
+  opacity: 0.9;
+}
+.empty-message {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+}

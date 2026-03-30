@@ -1,0 +1,13 @@
+<div class="search-container">
+  <h2>Search Inventory</h2>
+  <div class="search-bar">
+    <input type="text" [(ngModel)]="searchTerm" placeholder="Enter item name" (keyup.enter)="search()">
+    <button (click)="search()" class="btn-primary">🔍 Search</button>
+    <button (click)="showAllItems()" class="btn-secondary">📋 Show All</button>
+    <button (click)="showPopularItems()" class="btn-secondary">⭐ Show Popular</button>
+  </div>
+
+  <h3 *ngIf="!showAll && searchTerm">Search Results for "{{ searchTerm }}"</h3>
+  <h3 *ngIf="showAll">All Items</h3>
+  <app-item-list [items]="searchResults" [showActions]="true"></app-item-list>
+</div>

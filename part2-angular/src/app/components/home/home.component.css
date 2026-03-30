@@ -1,0 +1,41 @@
+.home-container {
+  text-align: center;
+}
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+.stat-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.stat-card h3 {
+  margin: 0 0 0.5rem 0;
+  color: #007bff;
+}
+.stat-card p {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+}
+.quick-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.btn {
+  display: inline-block;
+  background: #007bff;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  border-radius: 4px;
+}
+.btn:hover {
+  background: #0056b3;
+}

@@ -1,0 +1,31 @@
+<div *ngIf="items.length === 0" class="empty-message">
+  No items to display.
+</div>
+<div *ngIf="items.length > 0" class="table-responsive">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Category</th><th>Quantity</th><th>Price</th>
+        <th>Supplier</th><th>Stock</th><th>Popular</th><th>Comment</th>
+        <th *ngIf="showActions">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>{{ item.id }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.category }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.price | currency }}</td>
+        <td>{{ item.supplier }}</td>
+        <td>{{ item.stockStatus }}</td>
+        <td>{{ item.popular }}</td>
+        <td>{{ item.comment || '-' }}</td>
+        <td *ngIf="showActions">
+          <button (click)="editItem(item.name)" class="btn-small">Edit</button>
+          <button (click)="deleteItem(item.name)" class="btn-small danger">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

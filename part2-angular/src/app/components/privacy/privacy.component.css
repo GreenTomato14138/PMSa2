@@ -1,0 +1,11 @@
+.privacy-container {
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+h2, h3 {
+  color: #007bff;
+}
+ul {
+  margin-bottom: 1.5rem;
+}

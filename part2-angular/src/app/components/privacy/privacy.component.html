@@ -1,0 +1,26 @@
+<div class="privacy-container">
+  <h2>Privacy and Security Analysis</h2>
+  <p>This application is designed with privacy and security as a priority. All data is stored locally in the browser's memory and is not transmitted to any external server.</p>
+
+  <h3>Data Handling</h3>
+  <ul>
+    <li>No personal data is collected or stored beyond the current session.</li>
+    <li>All inventory data is stored in-memory and is lost when the browser is closed or refreshed.</li>
+    <li>No cookies or local storage are used for persistence.</li>
+  </ul>
+
+  <h3>Security Considerations</h3>
+  <ul>
+    <li>Input validation ensures that numeric fields only accept numbers, preventing injection attacks.</li>
+    <li>Data displayed in tables is escaped to prevent XSS (Cross-Site Scripting).</li>
+    <li>Confirmation prompts are used for destructive actions (e.g., deletion).</li>
+    <li>No sensitive information is exposed in URLs or network requests.</li>
+  </ul>
+
+  <h3>Best Practices Followed</h3>
+  <ul>
+    <li>TypeScript enforces strict typing to avoid runtime errors.</li>
+    <li>Angular's built-in sanitization protects against XSS.</li>
+    <li>Responsive design ensures usability on mobile devices without compromising security.</li>
+  </ul>
+</div>

@@ -1,7 +1,7 @@
 /**
  * Inventory Management System - Part 1
- * Author: [Your Name]
- * Student ID: [Your ID]
+ * Author: Boyuan_Liu
+ * Student ID: 24832410
  * Date: March 2026
  * Description: Pure TypeScript app with session-based inventory management.
  * All interactions use innerHTML, no alerts.

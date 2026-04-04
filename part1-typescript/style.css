@@ -19,7 +19,6 @@ body {
   border-radius: 2rem;
   box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
   padding: 2rem;
-  transition: all 0.3s;
 }
 
 .header {
@@ -52,17 +51,14 @@ body {
   padding: 1rem;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s;
-}
-.stat-card:hover { transform: translateY(-3px); }
-.stat-card span {
-  display: block;
-  font-size: 0.9rem;
-  color: #666;
 }
 .stat-card strong {
   font-size: 1.8rem;
+  display: block;
   color: #333;
+}
+.stat-card span {
+  color: #666;
 }
 
 .action-tabs {
@@ -84,10 +80,14 @@ body {
 .tab-btn.active {
   background: #667eea;
   color: white;
-  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
 }
-.panel { display: none; margin-bottom: 2rem; }
-.panel.active { display: block; }
+.panel {
+  display: none;
+  margin-bottom: 2rem;
+}
+.panel.active {
+  display: block;
+}
 
 .form-grid {
   display: grid;
@@ -101,20 +101,12 @@ input, select, button {
   border: 1px solid #ccc;
   font-size: 0.9rem;
 }
-input:focus, select:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 2px rgba(102,126,234,0.2);
-}
 .btn-primary {
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   border: none;
-  font-weight: bold;
   cursor: pointer;
-  transition: 0.2s;
 }
-.btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
 .btn-danger {
   background: #e74c3c;
   color: white;
@@ -127,12 +119,17 @@ input:focus, select:focus {
 }
 .message {
   margin-top: 0.5rem;
-  font-size: 0.85rem;
   padding: 0.3rem;
   border-radius: 0.5rem;
 }
-.error { background: #fee; color: #c0392b; }
-.success { background: #e8f8f5; color: #27ae60; }
+.error {
+  background: #fee;
+  color: #c0392b;
+}
+.success {
+  background: #e8f8f5;
+  color: #27ae60;
+}
 
 .toolbar {
   display: flex;
@@ -149,7 +146,9 @@ input:focus, select:focus {
   gap: 0.5rem;
   align-items: center;
 }
-.search-box input { width: 250px; }
+.search-box input {
+  width: 250px;
+}
 
 .table-container {
   overflow-x: auto;
@@ -159,8 +158,6 @@ input:focus, select:focus {
   border-collapse: collapse;
   background: white;
   border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 .inventory-table th, .inventory-table td {
   padding: 0.9rem;
@@ -169,10 +166,7 @@ input:focus, select:focus {
 }
 .inventory-table th {
   background: #f8f9fa;
-  font-weight: 600;
-  color: #333;
 }
-.inventory-table tr:hover { background: #fafafa; }
 .stock-badge {
   display: inline-block;
   padding: 0.2rem 0.6rem;

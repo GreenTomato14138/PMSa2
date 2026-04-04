@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Meta information for character encoding and responsive viewport -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Pro Inventory System | Part 1</title>
-  <link rel="stylesheet" href="style.css">   <!-- 注意：文件名 style.css -->
+  <!-- External stylesheet for the application layout and design -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Main application container -->
   <div class="app-container">
+    <!-- Header section: displays title and technology stack -->
     <header class="header">
       <h1>📦 Pro Inventory Manager</h1>
       <p>TypeScript • Session Storage • Responsive</p>
     </header>
 
-    <!-- 统计卡片 -->
-    <div class="stats-grid" id="statsGrid">
+    <!-- Statistics cards: total items, total inventory value, low stock count -->
+    <div class="stats-grid">
       <div class="stat-card"><span>📦 Total Items</span><strong id="totalItems">0</strong></div>
       <div class="stat-card"><span>💰 Total Value</span><strong id="totalValue">$0</strong></div>
       <div class="stat-card"><span>⚠️ Low Stock</span><strong id="lowStockCount">0</strong></div>
     </div>
 
-    <!-- 操作标签页 -->
+    <!-- Tab buttons to switch between Add, Edit, and Delete panels -->
     <div class="action-tabs">
       <button class="tab-btn active" data-tab="add">➕ Add Item</button>
       <button class="tab-btn" data-tab="edit">✏️ Edit Item</button>
       <button class="tab-btn" data-tab="delete">🗑️ Delete Item</button>
     </div>
 
-    <!-- 添加物品面板 -->
+    <!-- Panel for adding a new inventory item -->
     <div id="addPanel" class="panel active">
       <h3>Add New Item</h3>
+      <!-- Form containing all required fields for a new item -->
       <form id="addForm" class="form-grid">
         <input type="text" id="addName" placeholder="Item Name *" required>
         <select id="addCategory" required>
@@ -48,38 +53,53 @@
         <input type="text" id="addComment" placeholder="Comment (optional)">
         <button type="submit" class="btn-primary">➕ Add Item</button>
       </form>
+      <!-- Feedback message area for add operation -->
       <div id="addMessage" class="message"></div>
     </div>
 
-    <!-- 编辑物品面板 -->
+    <!-- Panel for editing an existing inventory item (search by current name) -->
     <div id="editPanel" class="panel">
       <h3>Edit Item (by Name)</h3>
       <div class="form-grid">
         <input type="text" id="editSearchName" placeholder="Current Item Name *">
         <input type="text" id="editNewName" placeholder="New Name (leave blank to keep)">
-        <select id="editCategory"><option value="">-- No change --</option><option>Electronics</option><option>Furniture</option><option>Clothing</option><option>Tools</option><option>Miscellaneous</option></select>
+        <select id="editCategory">
+          <option value="">-- No change --</option>
+          <option value="Electronics">Electronics</option><option value="Furniture">Furniture</option>
+          <option value="Clothing">Clothing</option><option value="Tools">Tools</option>
+          <option value="Miscellaneous">Miscellaneous</option>
+        </select>
         <input type="number" id="editQuantity" placeholder="New Quantity" min="0">
         <input type="number" id="editPrice" placeholder="New Price" min="0.01" step="0.01">
         <input type="text" id="editSupplier" placeholder="New Supplier">
-        <select id="editStockStatus"><option value="">-- No change --</option><option>In Stock</option><option>Low Stock</option><option>Out of Stock</option></select>
-        <select id="editPopular"><option value="">-- No change --</option><option>Yes</option><option>No</option></select>
+        <select id="editStockStatus">
+          <option value="">-- No change --</option>
+          <option value="In Stock">In Stock</option><option value="Low Stock">Low Stock</option>
+          <option value="Out of Stock">Out of Stock</option>
+        </select>
+        <select id="editPopular">
+          <option value="">-- No change --</option>
+          <option value="Yes">Yes</option><option value="No">No</option>
+        </select>
         <input type="text" id="editComment" placeholder="New Comment">
         <button id="updateBtn" class="btn-primary">✏️ Update Item</button>
       </div>
+      <!-- Feedback message area for edit operation -->
       <div id="editMessage" class="message"></div>
     </div>
 
-    <!-- 删除物品面板 -->
+    <!-- Panel for deleting an inventory item by its name -->
     <div id="deletePanel" class="panel">
       <h3>Delete Item (by Name)</h3>
       <div class="form-grid">
         <input type="text" id="deleteName" placeholder="Item Name to delete">
         <button id="deleteBtn" class="btn-danger">🗑️ Delete Item</button>
       </div>
+      <!-- Feedback message area for delete operation -->
       <div id="deleteMessage" class="message"></div>
     </div>
 
-    <!-- 工具栏 -->
+    <!-- Toolbar with search, filter, category filter, and reset sample data functionality -->
     <div class="toolbar">
       <div class="search-box">
         <input type="text" id="searchInput" placeholder="🔍 Search by name...">
@@ -99,13 +119,13 @@
       </div>
     </div>
 
-    <!-- 物品列表展示区 -->
+    <!-- Container where the inventory list (table/cards) will be dynamically rendered -->
     <div class="table-container">
       <div id="inventoryList"></div>
     </div>
   </div>
 
-  <!-- 自定义模态框 -->
+  <!-- Custom confirmation modal for destructive actions (e.g., delete) -->
   <div id="customModal" class="modal">
     <div class="modal-content">
       <p id="modalMessage">Are you sure?</p>
@@ -116,6 +136,7 @@
     </div>
   </div>
 
+  <!-- External JavaScript file containing inventory logic (TypeScript compiled) -->
   <script src="inventory.js"></script>
 </body>
 </html>

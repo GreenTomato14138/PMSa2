@@ -1,7 +1,7 @@
 /**
  * PROG2005 Part 1 - Advanced Inventory Management System
- * Author: [Your Name]
- * Student ID: [Your ID]
+ * Author: Boyuan_Liu
+ * Student ID: 24832410
  * Features: Full CRUD, search, filter by category, custom modal, real-time stats
  */
 

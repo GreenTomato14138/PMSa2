@@ -1,349 +1,372 @@
 /**
- * Inventory Management System - Part 1
- * Author: Boyuan_Liu
- * Student ID: 24832410
- * Date: March 2026
- * Description: Pure TypeScript app with session-based inventory management.
- * All interactions use innerHTML, no alerts.
+ * PROG2005 Part 1 - Advanced Inventory Management System
+ * Author: [Your Name]
+ * Student ID: [Your ID]
+ * Features: Full CRUD, search, filter by category, custom modal, real-time stats
  */
 
-// Enums for strict typing
+// ==================== Enums & Interfaces ====================
 enum Category {
-    Electronics = "Electronics",
-    Furniture = "Furniture",
-    Clothing = "Clothing",
-    Tools = "Tools",
-    Miscellaneous = "Miscellaneous"
+  Electronics = "Electronics",
+  Furniture = "Furniture",
+  Clothing = "Clothing",
+  Tools = "Tools",
+  Miscellaneous = "Miscellaneous"
 }
 
 enum StockStatus {
-    InStock = "In Stock",
-    LowStock = "Low Stock",
-    OutOfStock = "Out of Stock"
+  InStock = "In Stock",
+  LowStock = "Low Stock",
+  OutOfStock = "Out of Stock"
 }
 
 enum PopularItem {
-    Yes = "Yes",
-    No = "No"
+  Yes = "Yes",
+  No = "No"
 }
 
-// Interface for inventory item
 interface InventoryItem {
-    id: number;
-    name: string;
-    category: Category;
-    quantity: number;
-    price: number;
-    supplier: string;
-    stockStatus: StockStatus;
-    popular: PopularItem;
-    comment?: string;   // optional
+  id: number;
+  name: string;
+  category: Category;
+  quantity: number;
+  price: number;
+  supplier: string;
+  stockStatus: StockStatus;
+  popular: PopularItem;
+  comment?: string;
 }
 
-// Main manager class
+// ==================== Inventory Manager Class ====================
 class InventoryManager {
-    private items: InventoryItem[] = [];
-    private nextId: number = 1;
+  private items: InventoryItem[] = [];
+  private nextId: number = 1;
+  private listeners: (() => void)[] = [];
 
-    constructor() {
-        this.loadSampleData();
-        this.attachEventListeners();
-        this.displayAllItems();
+  constructor() {
+    this.loadSampleData();
+  }
+
+  private loadSampleData(): void {
+    this.items = [
+      { id: this.nextId++, name: "MacBook Pro", category: Category.Electronics, quantity: 10, price: 2499, supplier: "Apple", stockStatus: StockStatus.InStock, popular: PopularItem.Yes, comment: "M3 chip" },
+      { id: this.nextId++, name: "Gaming Chair", category: Category.Furniture, quantity: 3, price: 399, supplier: "Secretlab", stockStatus: StockStatus.LowStock, popular: PopularItem.Yes },
+      { id: this.nextId++, name: "Leather Jacket", category: Category.Clothing, quantity: 0, price: 150, supplier: "Zara", stockStatus: StockStatus.OutOfStock, popular: PopularItem.No },
+      { id: this.nextId++, name: "Cordless Drill", category: Category.Tools, quantity: 8, price: 89, supplier: "Bosch", stockStatus: StockStatus.InStock, popular: PopularItem.No },
+      { id: this.nextId++, name: "Desk Lamp", category: Category.Miscellaneous, quantity: 15, price: 25, supplier: "IKEA", stockStatus: StockStatus.InStock, popular: PopularItem.Yes }
+    ];
+  }
+
+  public resetToSample(): void {
+    this.items = [];
+    this.nextId = 1;
+    this.loadSampleData();
+    this.notifyListeners();
+  }
+
+  public subscribe(listener: () => void): void {
+    this.listeners.push(listener);
+  }
+
+  private notifyListeners(): void {
+    this.listeners.forEach(l => l());
+  }
+
+  getAllItems(): InventoryItem[] {
+    return [...this.items];
+  }
+
+  getPopularItems(): InventoryItem[] {
+    return this.items.filter(i => i.popular === PopularItem.Yes);
+  }
+
+  addItem(item: Omit<InventoryItem, 'id'>): { success: boolean; message: string } {
+    if (!item.name.trim()) return { success: false, message: "Item name is required" };
+    if (item.quantity < 0) return { success: false, message: "Quantity cannot be negative" };
+    if (item.price <= 0) return { success: false, message: "Price must be positive" };
+    if (this.items.some(i => i.name.toLowerCase() === item.name.toLowerCase())) {
+      return { success: false, message: "Item name already exists" };
     }
+    const newItem: InventoryItem = { id: this.nextId++, ...item };
+    this.items.push(newItem);
+    this.notifyListeners();
+    return { success: true, message: `Item "${item.name}" added successfully` };
+  }
 
-    // Populate with sample data
-    private loadSampleData(): void {
-        this.items.push({
-            id: this.nextId++,
-            name: "MacBook Pro",
-            category: Category.Electronics,
-            quantity: 12,
-            price: 1999,
-            supplier: "Apple Inc.",
-            stockStatus: StockStatus.InStock,
-            popular: PopularItem.Yes,
-            comment: "M3 chip, 16GB RAM"
-        });
-        this.items.push({
-            id: this.nextId++,
-            name: "Office Desk",
-            category: Category.Furniture,
-            quantity: 5,
-            price: 299,
-            supplier: "IKEA",
-            stockStatus: StockStatus.LowStock,
-            popular: PopularItem.No,
-            comment: "Black, 120x60cm"
-        });
+  updateItemByName(name: string, updates: Partial<InventoryItem>): { success: boolean; message: string } {
+    const index = this.items.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
+    if (index === -1) return { success: false, message: `Item "${name}" not found` };
+    // Handle name change uniqueness
+    if (updates.name && updates.name.trim() !== "") {
+      const newName = updates.name.trim();
+      if (newName.toLowerCase() !== name.toLowerCase() && this.items.some(i => i.name.toLowerCase() === newName.toLowerCase())) {
+        return { success: false, message: "New name already exists" };
+      }
+      this.items[index].name = newName;
     }
+    // Apply other updates
+    if (updates.category !== undefined) this.items[index].category = updates.category;
+    if (updates.quantity !== undefined && updates.quantity >= 0) this.items[index].quantity = updates.quantity;
+    if (updates.price !== undefined && updates.price > 0) this.items[index].price = updates.price;
+    if (updates.supplier !== undefined) this.items[index].supplier = updates.supplier;
+    if (updates.stockStatus !== undefined) this.items[index].stockStatus = updates.stockStatus;
+    if (updates.popular !== undefined) this.items[index].popular = updates.popular;
+    if (updates.comment !== undefined) this.items[index].comment = updates.comment;
+    this.notifyListeners();
+    return { success: true, message: `Item "${name}" updated successfully` };
+  }
 
-    // Get all items (immutable copy)
-    getAllItems(): InventoryItem[] {
-        return [...this.items];
-    }
+  deleteItemByName(name: string): { success: boolean; message: string } {
+    const index = this.items.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
+    if (index === -1) return { success: false, message: `Item "${name}" not found` };
+    this.items.splice(index, 1);
+    this.notifyListeners();
+    return { success: true, message: `Item "${name}" deleted` };
+  }
 
-    // Get popular items
-    getPopularItems(): InventoryItem[] {
-        return this.items.filter(item => item.popular === PopularItem.Yes);
-    }
+  searchByName(name: string): InventoryItem[] {
+    if (!name.trim()) return this.getAllItems();
+    return this.items.filter(i => i.name.toLowerCase().includes(name.toLowerCase()));
+  }
 
-    // Add new item
-    addItem(item: Omit<InventoryItem, 'id'>): { success: boolean; message: string } {
-        // Check uniqueness by name (case-insensitive)
-        const exists = this.items.some(i => i.name.toLowerCase() === item.name.toLowerCase());
-        if (exists) {
-            return { success: false, message: `Item "${item.name}" already exists.` };
-        }
-        // Validation: required fields (comment is optional)
-        if (!item.name || !item.category || item.quantity === undefined || item.price === undefined || !item.supplier || !item.stockStatus || !item.popular) {
-            return { success: false, message: "All fields except comment are required." };
-        }
-        if (item.quantity < 0 || item.price < 0) {
-            return { success: false, message: "Quantity and price cannot be negative." };
-        }
-
-        const newItem: InventoryItem = {
-            id: this.nextId++,
-            ...item
-        };
-        this.items.push(newItem);
-        return { success: true, message: `Item "${item.name}" added successfully.` };
-    }
-
-    // Update item by name
-    updateItemByName(name: string, updates: Partial<InventoryItem>): { success: boolean; message: string } {
-        const index = this.items.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
-        if (index === -1) {
-            return { success: false, message: `Item "${name}" not found.` };
-        }
-
-        // Ensure unique name if name is being changed
-        if (updates.name && updates.name.toLowerCase() !== name.toLowerCase()) {
-            const exists = this.items.some(i => i.name.toLowerCase() === updates.name!.toLowerCase() && i.id !== this.items[index].id);
-            if (exists) {
-                return { success: false, message: `Item "${updates.name}" already exists.` };
-            }
-        }
-
-        // Validate numeric fields if provided
-        if (updates.quantity !== undefined && updates.quantity < 0) {
-            return { success: false, message: "Quantity cannot be negative." };
-        }
-        if (updates.price !== undefined && updates.price < 0) {
-            return { success: false, message: "Price cannot be negative." };
-        }
-
-        this.items[index] = { ...this.items[index], ...updates };
-        return { success: true, message: `Item "${name}" updated successfully.` };
-    }
-
-    // Delete item by name with confirmation (prompt is allowed as it's a standard browser confirm)
-    deleteItemByName(name: string): { success: boolean; message: string } {
-        const index = this.items.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
-        if (index === -1) {
-            return { success: false, message: `Item "${name}" not found.` };
-        }
-        const confirmDelete = confirm(`Are you sure you want to delete "${this.items[index].name}"?`);
-        if (!confirmDelete) {
-            return { success: false, message: "Deletion cancelled." };
-        }
-        this.items.splice(index, 1);
-        return { success: true, message: `Item "${name}" deleted successfully.` };
-    }
-
-    // Search by name (partial match)
-    searchByName(name: string): InventoryItem[] {
-        if (!name.trim()) return [];
-        return this.items.filter(i => i.name.toLowerCase().includes(name.toLowerCase()));
-    }
-
-    // Render table of items
-    private renderTable(items: InventoryItem[], title?: string): string {
-        if (!items.length) {
-            return `<p class="message">No items to display.</p>`;
-        }
-        let html = title ? `<h3>${title}</h3>` : '';
-        html += `<div style="overflow-x: auto;"><table>
-            <thead>
-                <tr><th>ID</th><th>Name</th><th>Category</th><th>Quantity</th><th>Price</th><th>Supplier</th><th>Stock</th><th>Popular</th><th>Comment</th></tr>
-            </thead>
-            <tbody>`;
-        for (const item of items) {
-            html += `<tr>
-                <td>${item.id}</td>
-                <td>${this.escapeHtml(item.name)}</td>
-                <td>${item.category}</td>
-                <td>${item.quantity}</td>
-                <td>$${item.price.toFixed(2)}</td>
-                <td>${this.escapeHtml(item.supplier)}</td>
-                <td>${item.stockStatus}</td>
-                <td>${item.popular}</td>
-                <td>${item.comment ? this.escapeHtml(item.comment) : '-'}</td>
-            </tr>`;
-        }
-        html += `</tbody></table></div>`;
-        return html;
-    }
-
-    // Helper to prevent XSS
-    private escapeHtml(str: string): string {
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    // Display message in UI
-    private showMessage(msg: string, isError: boolean = false): void {
-        const msgDiv = document.getElementById('messageArea');
-        if (msgDiv) {
-            msgDiv.innerHTML = `<div style="color: ${isError ? '#dc3545' : '#28a745'}">${this.escapeHtml(msg)}</div>`;
-            setTimeout(() => {
-                if (msgDiv) msgDiv.innerHTML = '';
-            }, 3000);
-        }
-    }
-
-    // Display all items
-    displayAllItems(): void {
-        const outputDiv = document.getElementById('inventoryDisplay');
-        if (outputDiv) {
-            outputDiv.innerHTML = this.renderTable(this.getAllItems(), 'All Inventory Items');
-        }
-    }
-
-    // Display popular items
-    displayPopularItems(): void {
-        const outputDiv = document.getElementById('inventoryDisplay');
-        if (outputDiv) {
-            outputDiv.innerHTML = this.renderTable(this.getPopularItems(), '⭐ Popular Items');
-        }
-    }
-
-    // Display search results
-    displaySearchResults(searchTerm: string): void {
-        const results = this.searchByName(searchTerm);
-        const outputDiv = document.getElementById('inventoryDisplay');
-        if (outputDiv) {
-            if (results.length === 0 && searchTerm.trim() !== '') {
-                outputDiv.innerHTML = `<p class="message">No items match "${this.escapeHtml(searchTerm)}".</p>`;
-            } else {
-                outputDiv.innerHTML = this.renderTable(results, `Search results for "${this.escapeHtml(searchTerm)}"`);
-            }
-        }
-    }
-
-    // Handle add form
-    private handleAdd(): void {
-        const name = (document.getElementById('itemName') as HTMLInputElement).value.trim();
-        const category = (document.getElementById('category') as HTMLSelectElement).value as Category;
-        const quantity = parseInt((document.getElementById('quantity') as HTMLInputElement).value);
-        const price = parseFloat((document.getElementById('price') as HTMLInputElement).value);
-        const supplier = (document.getElementById('supplier') as HTMLInputElement).value.trim();
-        const stockStatus = (document.getElementById('stockStatus') as HTMLSelectElement).value as StockStatus;
-        const popular = (document.getElementById('popular') as HTMLSelectElement).value as PopularItem;
-        const comment = (document.getElementById('comment') as HTMLInputElement).value.trim();
-
-        if (!name || isNaN(quantity) || isNaN(price) || !supplier) {
-            this.showMessage('Please fill all required fields (Name, Quantity, Price, Supplier).', true);
-            return;
-        }
-
-        const result = this.addItem({
-            name, category, quantity, price, supplier, stockStatus, popular, comment: comment || undefined
-        });
-        this.showMessage(result.message, !result.success);
-        if (result.success) {
-            this.displayAllItems();
-            this.clearForm();
-        }
-    }
-
-    // Handle update
-    private handleUpdate(): void {
-        const name = (document.getElementById('itemName') as HTMLInputElement).value.trim();
-        if (!name) {
-            this.showMessage('Please enter the item name to update.', true);
-            return;
-        }
-        const updates: Partial<InventoryItem> = {};
-        const category = (document.getElementById('category') as HTMLSelectElement).value;
-        const quantity = (document.getElementById('quantity') as HTMLInputElement).value;
-        const price = (document.getElementById('price') as HTMLInputElement).value;
-        const supplier = (document.getElementById('supplier') as HTMLInputElement).value.trim();
-        const stockStatus = (document.getElementById('stockStatus') as HTMLSelectElement).value;
-        const popular = (document.getElementById('popular') as HTMLSelectElement).value;
-        const comment = (document.getElementById('comment') as HTMLInputElement).value.trim();
-
-        if (category) updates.category = category as Category;
-        if (quantity !== '') updates.quantity = parseInt(quantity);
-        if (price !== '') updates.price = parseFloat(price);
-        if (supplier) updates.supplier = supplier;
-        if (stockStatus) updates.stockStatus = stockStatus as StockStatus;
-        if (popular) updates.popular = popular as PopularItem;
-        if (comment !== '') updates.comment = comment || undefined;
-
-        if (Object.keys(updates).length === 0) {
-            this.showMessage('No fields to update.', true);
-            return;
-        }
-
-        const result = this.updateItemByName(name, updates);
-        this.showMessage(result.message, !result.success);
-        if (result.success) {
-            this.displayAllItems();
-            this.clearForm();
-        }
-    }
-
-    // Handle delete
-    private handleDelete(): void {
-        const name = (document.getElementById('itemName') as HTMLInputElement).value.trim();
-        if (!name) {
-            this.showMessage('Please enter the item name to delete.', true);
-            return;
-        }
-        const result = this.deleteItemByName(name);
-        this.showMessage(result.message, !result.success);
-        if (result.success) {
-            this.displayAllItems();
-            this.clearForm();
-        }
-    }
-
-    // Clear form inputs
-    private clearForm(): void {
-        (document.getElementById('itemName') as HTMLInputElement).value = '';
-        (document.getElementById('category') as HTMLSelectElement).selectedIndex = 0;
-        (document.getElementById('quantity') as HTMLInputElement).value = '';
-        (document.getElementById('price') as HTMLInputElement).value = '';
-        (document.getElementById('supplier') as HTMLInputElement).value = '';
-        (document.getElementById('stockStatus') as HTMLSelectElement).selectedIndex = 0;
-        (document.getElementById('popular') as HTMLSelectElement).selectedIndex = 0;
-        (document.getElementById('comment') as HTMLInputElement).value = '';
-    }
-
-    // Attach event listeners to buttons
-    private attachEventListeners(): void {
-        document.getElementById('addBtn')?.addEventListener('click', () => this.handleAdd());
-        document.getElementById('updateBtn')?.addEventListener('click', () => this.handleUpdate());
-        document.getElementById('deleteBtn')?.addEventListener('click', () => this.handleDelete());
-        document.getElementById('searchBtn')?.addEventListener('click', () => {
-            const searchTerm = (document.getElementById('searchName') as HTMLInputElement).value.trim();
-            if (searchTerm === '') {
-                this.displayAllItems();
-            } else {
-                this.displaySearchResults(searchTerm);
-            }
-        });
-        document.getElementById('showAllBtn')?.addEventListener('click', () => this.displayAllItems());
-        document.getElementById('showPopularBtn')?.addEventListener('click', () => this.displayPopularItems());
-    }
+  getTotalItems(): number { return this.items.length; }
+  getTotalValue(): number { return this.items.reduce((sum, i) => sum + (i.quantity * i.price), 0); }
+  getLowStockCount(): number { return this.items.filter(i => i.stockStatus === StockStatus.LowStock).length; }
 }
 
-// Initialize app when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    new InventoryManager();
+// ==================== UI Controller ====================
+class InventoryUI {
+  private manager: InventoryManager;
+  private currentDisplayItems: InventoryItem[] = [];
+  private pendingDeleteName: string = "";
+
+  // DOM elements
+  private inventoryListDiv: HTMLElement;
+  private totalItemsSpan: HTMLElement;
+  private totalValueSpan: HTMLElement;
+  private lowStockSpan: HTMLElement;
+  private addForm: HTMLFormElement;
+  private addMessageDiv: HTMLElement;
+  private editSearchInput: HTMLInputElement;
+  private editMessageDiv: HTMLElement;
+  private deleteNameInput: HTMLInputElement;
+  private deleteMessageDiv: HTMLElement;
+  private searchInput: HTMLInputElement;
+  private categoryFilter: HTMLSelectElement;
+  private modal: HTMLElement;
+  private modalMessage: HTMLElement;
+
+  constructor() {
+    this.manager = new InventoryManager();
+    this.manager.subscribe(() => this.refreshAll());
+    this.cacheDomElements();
+    this.attachEventListeners();
+    this.refreshAll();
+  }
+
+  private cacheDomElements(): void {
+    this.inventoryListDiv = document.getElementById("inventoryList")!;
+    this.totalItemsSpan = document.getElementById("totalItems")!;
+    this.totalValueSpan = document.getElementById("totalValue")!;
+    this.lowStockSpan = document.getElementById("lowStockCount")!;
+    this.addForm = document.getElementById("addForm") as HTMLFormElement;
+    this.addMessageDiv = document.getElementById("addMessage")!;
+    this.editSearchInput = document.getElementById("editSearchName") as HTMLInputElement;
+    this.editMessageDiv = document.getElementById("editMessage")!;
+    this.deleteNameInput = document.getElementById("deleteName") as HTMLInputElement;
+    this.deleteMessageDiv = document.getElementById("deleteMessage")!;
+    this.searchInput = document.getElementById("searchInput") as HTMLInputElement;
+    this.categoryFilter = document.getElementById("categoryFilter") as HTMLSelectElement;
+    this.modal = document.getElementById("customModal")!;
+    this.modalMessage = document.getElementById("modalMessage")!;
+  }
+
+  private attachEventListeners(): void {
+    // Tab switching
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement;
+        const tabId = target.dataset.tab;
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        target.classList.add("active");
+        document.querySelectorAll(".panel").forEach(panel => panel.classList.remove("active"));
+        if (tabId === "add") document.getElementById("addPanel")?.classList.add("active");
+        if (tabId === "edit") document.getElementById("editPanel")?.classList.add("active");
+        if (tabId === "delete") document.getElementById("deletePanel")?.classList.add("active");
+      });
+    });
+
+    // Add item
+    this.addForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const newItem = {
+        name: (document.getElementById("addName") as HTMLInputElement).value,
+        category: (document.getElementById("addCategory") as HTMLSelectElement).value as Category,
+        quantity: parseInt((document.getElementById("addQuantity") as HTMLInputElement).value),
+        price: parseFloat((document.getElementById("addPrice") as HTMLInputElement).value),
+        supplier: (document.getElementById("addSupplier") as HTMLInputElement).value,
+        stockStatus: (document.getElementById("addStockStatus") as HTMLSelectElement).value as StockStatus,
+        popular: (document.getElementById("addPopular") as HTMLSelectElement).value as PopularItem,
+        comment: (document.getElementById("addComment") as HTMLInputElement).value || undefined
+      };
+      const result = this.manager.addItem(newItem);
+      this.showMessage(this.addMessageDiv, result.message, result.success);
+      if (result.success) this.addForm.reset();
+    });
+
+    // Update item
+    const updateBtn = document.getElementById("updateBtn");
+    updateBtn?.addEventListener("click", () => {
+      const name = this.editSearchInput.value;
+      const updates: Partial<InventoryItem> = {};
+      const newName = (document.getElementById("editNewName") as HTMLInputElement).value;
+      if (newName) updates.name = newName;
+      const cat = (document.getElementById("editCategory") as HTMLSelectElement).value;
+      if (cat) updates.category = cat as Category;
+      const qty = (document.getElementById("editQuantity") as HTMLInputElement).value;
+      if (qty !== "") updates.quantity = parseInt(qty);
+      const price = (document.getElementById("editPrice") as HTMLInputElement).value;
+      if (price !== "") updates.price = parseFloat(price);
+      const supplier = (document.getElementById("editSupplier") as HTMLInputElement).value;
+      if (supplier) updates.supplier = supplier;
+      const stock = (document.getElementById("editStockStatus") as HTMLSelectElement).value;
+      if (stock) updates.stockStatus = stock as StockStatus;
+      const pop = (document.getElementById("editPopular") as HTMLSelectElement).value;
+      if (pop) updates.popular = pop as PopularItem;
+      const comment = (document.getElementById("editComment") as HTMLInputElement).value;
+      if (comment !== "") updates.comment = comment;
+      const result = this.manager.updateItemByName(name, updates);
+      this.showMessage(this.editMessageDiv, result.message, result.success);
+      if (result.success) {
+        this.editSearchInput.value = "";
+        (document.getElementById("editNewName") as HTMLInputElement).value = "";
+        (document.getElementById("editQuantity") as HTMLInputElement).value = "";
+        (document.getElementById("editPrice") as HTMLInputElement).value = "";
+        (document.getElementById("editSupplier") as HTMLInputElement).value = "";
+        (document.getElementById("editComment") as HTMLInputElement).value = "";
+        (document.getElementById("editCategory") as HTMLSelectElement).value = "";
+        (document.getElementById("editStockStatus") as HTMLSelectElement).value = "";
+        (document.getElementById("editPopular") as HTMLSelectElement).value = "";
+      }
+    });
+
+    // Delete with custom modal
+    const deleteBtn = document.getElementById("deleteBtn");
+    deleteBtn?.addEventListener("click", () => {
+      const name = this.deleteNameInput.value.trim();
+      if (!name) {
+        this.showMessage(this.deleteMessageDiv, "Please enter an item name", false);
+        return;
+      }
+      this.pendingDeleteName = name;
+      this.modalMessage.innerText = `Are you sure you want to delete "${name}"?`;
+      this.modal.style.display = "flex";
+    });
+    document.getElementById("modalConfirm")?.addEventListener("click", () => {
+      const result = this.manager.deleteItemByName(this.pendingDeleteName);
+      this.showMessage(this.deleteMessageDiv, result.message, result.success);
+      if (result.success) this.deleteNameInput.value = "";
+      this.modal.style.display = "none";
+      this.pendingDeleteName = "";
+    });
+    document.getElementById("modalCancel")?.addEventListener("click", () => {
+      this.modal.style.display = "none";
+      this.pendingDeleteName = "";
+    });
+
+    // Search and filter
+    document.getElementById("searchBtn")?.addEventListener("click", () => this.applyFilter());
+    document.getElementById("showAllBtn")?.addEventListener("click", () => {
+      this.searchInput.value = "";
+      this.categoryFilter.value = "all";
+      this.applyFilter();
+    });
+    document.getElementById("showPopularBtn")?.addEventListener("click", () => {
+      this.currentDisplayItems = this.manager.getPopularItems();
+      this.renderTable();
+    });
+    this.categoryFilter.addEventListener("change", () => this.applyFilter());
+    document.getElementById("resetDataBtn")?.addEventListener("click", () => {
+      if (confirm("Reset to sample data? All current changes will be lost.")) {
+        this.manager.resetToSample();
+        this.applyFilter();
+      }
+    });
+  }
+
+  private applyFilter(): void {
+    let items = this.manager.searchByName(this.searchInput.value);
+    const category = this.categoryFilter.value;
+    if (category !== "all") {
+      items = items.filter(i => i.category === category);
+    }
+    this.currentDisplayItems = items;
+    this.renderTable();
+  }
+
+  private renderTable(): void {
+    if (this.currentDisplayItems.length === 0) {
+      this.inventoryListDiv.innerHTML = `<div class="message" style="text-align:center;">📭 No items to display</div>`;
+      return;
+    }
+    const table = document.createElement("table");
+    table.className = "inventory-table";
+    table.innerHTML = `
+      <thead>
+        <tr><th>ID</th><th>Name</th><th>Category</th><th>Qty</th><th>Price</th><th>Supplier</th><th>Stock</th><th>Popular</th><th>Comment</th></tr>
+      </thead>
+      <tbody>
+        ${this.currentDisplayItems.map(item => `
+          <tr>
+            <td>${item.id}</td>
+            <td><strong>${this.escapeHtml(item.name)}</strong></td>
+            <td>${item.category}</td>
+            <td>${item.quantity}</td>
+            <td>$${item.price.toFixed(2)}</td>
+            <td>${this.escapeHtml(item.supplier)}</td>
+            <td><span class="stock-badge ${this.getStockClass(item.stockStatus)}">${item.stockStatus}</span></td>
+            <td>${item.popular === PopularItem.Yes ? "⭐ Yes" : "No"}</td>
+            <td>${this.escapeHtml(item.comment || "-")}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    `;
+    this.inventoryListDiv.innerHTML = "";
+    this.inventoryListDiv.appendChild(table);
+  }
+
+  private refreshAll(): void {
+    this.totalItemsSpan.innerText = this.manager.getTotalItems().toString();
+    this.totalValueSpan.innerText = `$${this.manager.getTotalValue().toFixed(2)}`;
+    this.lowStockSpan.innerText = this.manager.getLowStockCount().toString();
+    this.applyFilter();
+  }
+
+  private showMessage(container: HTMLElement, msg: string, isSuccess: boolean): void {
+    container.innerText = msg;
+    container.className = `message ${isSuccess ? "success" : "error"}`;
+    setTimeout(() => { container.innerText = ""; container.className = "message"; }, 3000);
+  }
+
+  private getStockClass(status: StockStatus): string {
+    switch(status) {
+      case StockStatus.InStock: return "stock-in";
+      case StockStatus.LowStock: return "stock-low";
+      default: return "stock-out";
+    }
+  }
+
+  private escapeHtml(str: string): string {
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === "&") return "&amp;";
+      if (m === "<") return "&lt;";
+      if (m === ">") return "&gt;";
+      return m;
+    });
+  }
+}
+
+// 启动应用
+document.addEventListener("DOMContentLoaded", () => {
+  new InventoryUI();
 });

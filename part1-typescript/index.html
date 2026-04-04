@@ -1,65 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Inventory Management System - Part 1</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Pro Inventory System | Part 1</title>
+  <link rel="stylesheet" href="style.css">   <!-- 注意：文件名 style.css -->
 </head>
 <body>
-    <div class="app-container">
-        <header>
-            <h1>📦 Inventory Manager</h1>
-            <p>TypeScript-based session storage</p>
-        </header>
+  <div class="app-container">
+    <header class="header">
+      <h1>📦 Pro Inventory Manager</h1>
+      <p>TypeScript • Session Storage • Responsive</p>
+    </header>
 
-        <div class="form-section">
-            <h2>Add / Edit Item</h2>
-            <div class="form-grid">
-                <input type="text" id="itemName" placeholder="Item Name *" required>
-                <select id="category">
-                    <option value="Electronics">Electronics</option>
-                    <option value="Furniture">Furniture</option>
-                    <option value="Clothing">Clothing</option>
-                    <option value="Tools">Tools</option>
-                    <option value="Miscellaneous">Miscellaneous</option>
-                </select>
-                <input type="number" id="quantity" placeholder="Quantity *" min="0" step="1" required>
-                <input type="number" id="price" placeholder="Price *" min="0" step="0.01" required>
-                <input type="text" id="supplier" placeholder="Supplier *" required>
-                <select id="stockStatus">
-                    <option value="In Stock">In Stock</option>
-                    <option value="Low Stock">Low Stock</option>
-                    <option value="Out of Stock">Out of Stock</option>
-                </select>
-                <select id="popular">
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-                <input type="text" id="comment" placeholder="Comment (optional)">
-            </div>
-            <div class="button-group">
-                <button id="addBtn">➕ Add Item</button>
-                <button id="updateBtn">✏️ Update (by Name)</button>
-                <button id="deleteBtn">🗑️ Delete (by Name)</button>
-            </div>
-        </div>
-
-        <div class="action-section">
-            <div class="search-bar">
-                <input type="text" id="searchName" placeholder="Search by item name">
-                <button id="searchBtn">🔍 Search</button>
-                <button id="showAllBtn">📋 Show All</button>
-                <button id="showPopularBtn">⭐ Show Popular</button>
-            </div>
-        </div>
-
-        <div class="output-section">
-            <div id="messageArea" class="message"></div>
-            <div id="inventoryDisplay"></div>
-        </div>
+    <!-- 统计卡片 -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card"><span>📦 Total Items</span><strong id="totalItems">0</strong></div>
+      <div class="stat-card"><span>💰 Total Value</span><strong id="totalValue">$0</strong></div>
+      <div class="stat-card"><span>⚠️ Low Stock</span><strong id="lowStockCount">0</strong></div>
     </div>
 
-    <script src="inventory.js"></script>
+    <!-- 操作标签页 -->
+    <div class="action-tabs">
+      <button class="tab-btn active" data-tab="add">➕ Add Item</button>
+      <button class="tab-btn" data-tab="edit">✏️ Edit Item</button>
+      <button class="tab-btn" data-tab="delete">🗑️ Delete Item</button>
+    </div>
+
+    <!-- 添加物品面板 -->
+    <div id="addPanel" class="panel active">
+      <h3>Add New Item</h3>
+      <form id="addForm" class="form-grid">
+        <input type="text" id="addName" placeholder="Item Name *" required>
+        <select id="addCategory" required>
+          <option value="Electronics">Electronics</option><option value="Furniture">Furniture</option>
+          <option value="Clothing">Clothing</option><option value="Tools">Tools</option>
+          <option value="Miscellaneous">Miscellaneous</option>
+        </select>
+        <input type="number" id="addQuantity" placeholder="Quantity *" min="0" required>
+        <input type="number" id="addPrice" placeholder="Price *" min="0.01" step="0.01" required>
+        <input type="text" id="addSupplier" placeholder="Supplier *" required>
+        <select id="addStockStatus" required>
+          <option value="In Stock">In Stock</option><option value="Low Stock">Low Stock</option>
+          <option value="Out of Stock">Out of Stock</option>
+        </select>
+        <select id="addPopular" required><option value="Yes">Yes</option><option value="No">No</option></select>
+        <input type="text" id="addComment" placeholder="Comment (optional)">
+        <button type="submit" class="btn-primary">➕ Add Item</button>
+      </form>
+      <div id="addMessage" class="message"></div>
+    </div>
+
+    <!-- 编辑物品面板 -->
+    <div id="editPanel" class="panel">
+      <h3>Edit Item (by Name)</h3>
+      <div class="form-grid">
+        <input type="text" id="editSearchName" placeholder="Current Item Name *">
+        <input type="text" id="editNewName" placeholder="New Name (leave blank to keep)">
+        <select id="editCategory"><option value="">-- No change --</option><option>Electronics</option><option>Furniture</option><option>Clothing</option><option>Tools</option><option>Miscellaneous</option></select>
+        <input type="number" id="editQuantity" placeholder="New Quantity" min="0">
+        <input type="number" id="editPrice" placeholder="New Price" min="0.01" step="0.01">
+        <input type="text" id="editSupplier" placeholder="New Supplier">
+        <select id="editStockStatus"><option value="">-- No change --</option><option>In Stock</option><option>Low Stock</option><option>Out of Stock</option></select>
+        <select id="editPopular"><option value="">-- No change --</option><option>Yes</option><option>No</option></select>
+        <input type="text" id="editComment" placeholder="New Comment">
+        <button id="updateBtn" class="btn-primary">✏️ Update Item</button>
+      </div>
+      <div id="editMessage" class="message"></div>
+    </div>
+
+    <!-- 删除物品面板 -->
+    <div id="deletePanel" class="panel">
+      <h3>Delete Item (by Name)</h3>
+      <div class="form-grid">
+        <input type="text" id="deleteName" placeholder="Item Name to delete">
+        <button id="deleteBtn" class="btn-danger">🗑️ Delete Item</button>
+      </div>
+      <div id="deleteMessage" class="message"></div>
+    </div>
+
+    <!-- 工具栏 -->
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Search by name...">
+        <button id="searchBtn">Search</button>
+        <button id="showAllBtn">📋 Show All</button>
+        <button id="showPopularBtn">⭐ Show Popular</button>
+      </div>
+      <div class="filter-box">
+        <label>Filter by Category:</label>
+        <select id="categoryFilter">
+          <option value="all">All Categories</option>
+          <option value="Electronics">Electronics</option><option value="Furniture">Furniture</option>
+          <option value="Clothing">Clothing</option><option value="Tools">Tools</option>
+          <option value="Miscellaneous">Miscellaneous</option>
+        </select>
+        <button id="resetDataBtn" class="btn-secondary">⟳ Reset Sample Data</button>
+      </div>
+    </div>
+
+    <!-- 物品列表展示区 -->
+    <div class="table-container">
+      <div id="inventoryList"></div>
+    </div>
+  </div>
+
+  <!-- 自定义模态框 -->
+  <div id="customModal" class="modal">
+    <div class="modal-content">
+      <p id="modalMessage">Are you sure?</p>
+      <div class="modal-buttons">
+        <button id="modalConfirm" class="btn-danger">Confirm</button>
+        <button id="modalCancel" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="inventory.js"></script>
 </body>
 </html>

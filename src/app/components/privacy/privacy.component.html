@@ -1,0 +1,44 @@
+/**
+ * PROG2005 Part 2 - Aether Inventory
+ * Author: Boyuan_Liu
+ * Student ID: 24832410
+ */
+<div class="privacy-container">
+  <h2>🛡️ Sanctum of Shadows – Privacy & Security</h2>
+  
+  <section class="privacy-section">
+    <h3>1. Minimalist data rite</h3>
+    <p>Only product‑centric attributes (Sigil, Name, Realm, Quantity, Price, Supplier, Aura) are stored. Absolutely no personal data, location, or device identifiers are collected or tracked.</p>
+  </section>
+
+  <section class="privacy-section">
+    <h3>2. Ephemeral storage covenant</h3>
+    <p>This is a client‑side demo using in‑memory storage. In production, implement encrypted storage (iOS Keychain / Android Keystore) and avoid storing sensitive supplier contracts or cost prices in plain text.</p>
+  </section>
+
+  <section class="privacy-section">
+    <h3>3. Warding against curses (injection)</h3>
+    <p>All inputs are validated: unique Sigil, numeric ranges, and HTML escaping to prevent XSS. Every user entry is sanitized before display.</p>
+  </section>
+
+  <section class="privacy-section">
+    <h3>4. Least privilege covenant</h3>
+    <p>The application requests zero device permissions (camera, location, contacts). Mobile apps should always follow this principle, requesting only essential permissions with clear user explanation.</p>
+  </section>
+
+  <section class="privacy-section">
+    <h3>5. Veiled transmission (network)</h3>
+    <p>Although this demo is front‑only, any production mobile app must enforce HTTPS/TLS 1.3, implement certificate pinning, and avoid sensitive data in URL parameters.</p>
+  </section>
+
+  <section class="privacy-section">
+    <h3>6. Transparent rituals</h3>
+    <p>Delete operations require explicit confirmation; edit actions provide cancel options. Clear feedback messages appear after every mutation. Compliant with GDPR spirit.</p>
+  </section>
+
+  <div class="reference">
+    <h4>📚 Ancient scrolls</h4>
+    <p>OWASP Mobile Top 10 (2024). <em>Mobile Security Risks</em>.</p>
+    <p>Android Security Best Practices · Apple App Privacy Details.</p>
+  </div>
+</div>

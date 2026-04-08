@@ -1,0 +1,89 @@
+/**
+ * PROG2005 Part 2 - Aether Inventory
+ * Author: Boyuan_Liu
+ * Student ID: 24832410
+ */
+.navbar {
+  background: linear-gradient(115deg, #2a1b3d 0%, #3c2a5a 100%);
+  backdrop-filter: blur(4px);
+  color: white;
+  padding: 1rem 0;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(210, 180, 255, 0.2);
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.logo {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  background: linear-gradient(130deg, #f0e6ff, #c9b3ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  color: #f0eaff;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1.2rem;
+  border-radius: 40px;
+  transition: all 0.2s;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-links a:hover, .nav-links a.active {
+  background: #7c4dff;
+  color: white;
+  box-shadow: 0 4px 12px rgba(124, 77, 255, 0.4);
+}
+
+.main-content {
+  min-height: calc(100vh - 140px);
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.footer {
+  background: #1e142f;
+  color: #b59fd6;
+  text-align: center;
+  padding: 1.2rem;
+  font-size: 0.85rem;
+  border-top: 1px solid rgba(210, 180, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
+  }
+  .main-content {
+    padding: 1rem;
+  }
+}

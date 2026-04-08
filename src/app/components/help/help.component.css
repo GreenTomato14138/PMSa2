@@ -1,0 +1,36 @@
+/**
+ * PROG2005 Part 2 - Aether Inventory
+ * Author: Boyuan_Liu
+ * Student ID: 24832410
+ */
+.help-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.help-container h2 {
+  color: #5b2e9e;
+  border-left: 5px solid #a855f7;
+  padding-left: 1rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.faq-item {
+  background: white;
+  padding: 1.3rem 1.8rem;
+  border-radius: 1.5rem;
+  transition: all 0.2s;
+  border: 1px solid #e9dfff;
+}
+.faq-item:hover {
+  border-color: #c4a5ff;
+  box-shadow: 0 12px 18px -12px rgba(128, 0, 255, 0.1);
+}
+
+.troubleshooting {
+  background: #faf5ff;
+  border-left: 5px solid #c084fc;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+}

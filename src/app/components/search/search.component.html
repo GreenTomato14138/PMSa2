@@ -1,0 +1,68 @@
+/**
+ * PROG2005 Part 2 - Aether Inventory
+ * Author: Boyuan_Liu
+ * Student ID: 24832410
+ */
+<div class="search-container">
+  <div class="search-filters glass-panel">
+    <h2>🔮 Oracle of Products</h2>
+    
+    <div class="filter-group">
+      <label>Name Incantation</label>
+      <input type="text" [(ngModel)]="keyword" placeholder="Whisper a name...">
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>Realm</label>
+        <select [(ngModel)]="selectedCategory">
+          <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Min Price (¥)</label>
+        <input type="number" [(ngModel)]="minPrice" min="0" step="10">
+      </div>
+
+      <div class="filter-group">
+        <label>Max Price (¥)</label>
+        <input type="number" [(ngModel)]="maxPrice" min="0" step="10">
+      </div>
+    </div>
+
+    <div class="search-actions">
+      <button (click)="onSearch()">🌙 Scry</button>
+      <button (click)="clearFilters()" class="secondary">Reset Runes</button>
+    </div>
+  </div>
+
+  <div class="search-results">
+    <h3>Visions ({{ searchResults.length }} found)</h3>
+    
+    <div class="results-grid" *ngIf="searchResults.length > 0">
+      <div class="result-card" *ngFor="let item of searchResults">
+        <div class="result-header">
+          <h4>{{ item.name }}</h4>
+          <span class="hot" *ngIf="item.hotItem === 'Yes'">✦ Radiant</span>
+        </div>
+        <div class="result-details">
+          <p><strong>Sigil:</strong> {{ item.id }}</p>
+          <p><strong>Realm:</strong> {{ item.category }}</p>
+          <p><strong>Quantity:</strong> {{ item.quantity }}</p>
+          <p><strong>Price:</strong> ¥{{ item.price }}</p>
+          <p><strong>Supplier:</strong> {{ item.supplier }}</p>
+          <p><strong>Aura:</strong> <span [class]="getStockStatusClass(item.stockStatus)">{{ item.stockStatus }}</span></p>
+          <p><strong>Notes:</strong> {{ item.comments || '—' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-results" *ngIf="searchResults.length === 0 && keyword">
+      No echoes match your query.
+    </div>
+    <div class="no-results" *ngIf="searchResults.length === 0 && !keyword">
+      Invoke a search to reveal hidden artifacts.
+    </div>
+  </div>
+</div>

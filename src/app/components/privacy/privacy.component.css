@@ -1,0 +1,37 @@
+/**
+ * PROG2005 Part 2 - Aether Inventory
+ * Author: Boyuan_Liu
+ * Student ID: 24832410
+ */.privacy-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.privacy-container h2 {
+  color: #5b2e9e;
+  border-left: 5px solid #a855f7;
+  padding-left: 1rem;
+  margin-bottom: 2rem;
+}
+
+.privacy-section {
+  background: rgba(255, 250, 255, 0.8);
+  backdrop-filter: blur(4px);
+  border-radius: 1.8rem;
+  padding: 1.6rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e6dcff;
+}
+
+.privacy-section h3 {
+  color: #7c3aed;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.reference {
+  background: #f3ebff;
+  border-radius: 1.2rem;
+  padding: 1rem;
+  margin-top: 2rem;
+}

@@ -1,0 +1,115 @@
+/**
+ * PROG2005 Part 2 - Aether Inventory
+ * Author: Boyuan_Liu
+ * Student ID: 24832410
+ */
+<div class="inventory-container">
+  <div class="form-section glass-card">
+    <h2>{{ editMode ? '✧ Transmute Artifact' : '✧ Forge New Artifact' }}</h2>
+    
+    <div *ngIf="message" class="message" [class.error]="message.isError">
+      {{ message.text }}
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #inventoryForm="ngForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Sigil (ID) *</label>
+          <input type="text" [(ngModel)]="formData.id" name="id" required [disabled]="editMode" placeholder="e.g., AETH-001">
+        </div>
+        <div class="form-group">
+          <label>True Name *</label>
+          <input type="text" [(ngModel)]="formData.name" name="name" required placeholder="Product name">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Realm (Category) *</label>
+          <select [(ngModel)]="formData.category" name="category">
+            <option value="Electronics">Electronics</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Tools">Tools</option>
+            <option value="Misc">Misc</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Quantity *</label>
+          <input type="number" [(ngModel)]="formData.quantity" name="quantity" min="0" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Price (¥) *</label>
+          <input type="number" [(ngModel)]="formData.price" name="price" min="0" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label>Supplier *</label>
+          <input type="text" [(ngModel)]="formData.supplier" name="supplier" required placeholder="Source">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Stock Aura *</label>
+          <select [(ngModel)]="formData.stockStatus" name="stockStatus">
+            <option value="In Stock">Abundant</option>
+            <option value="Low Stock">Fading</option>
+            <option value="Out of Stock">Void</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Radiant *</label>
+          <select [(ngModel)]="formData.hotItem" name="hotItem">
+            <option value="Yes">✦ Yes</option>
+            <option value="No">✧ No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Arcane Notes</label>
+        <textarea [(ngModel)]="formData.comments" name="comments" rows="2" placeholder="Optional remarks..."></textarea>
+      </div>
+
+      <div class="button-group">
+        <button type="submit">{{ editMode ? 'Update Essence' : 'Conjure' }}</button>
+        <button type="button" *ngIf="editMode" (click)="resetForm()">Cancel Transmutation</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="list-section">
+    <div class="list-header">
+      <h2>📜 Grimoire of Artifacts</h2>
+      <div class="filter-buttons">
+        <button (click)="toggleHotFilter()" [class.active]="showHotOnly">
+          ✨ Show Radiant Only
+        </button>
+        <button (click)="resetFilter()" *ngIf="showHotOnly">Show All</button>
+      </div>
+    </div>
+
+    <div class="product-grid">
+      <div class="product-card" *ngFor="let item of displayItems">
+        <div class="card-header">
+          <h3>{{ item.name }}</h3>
+          <span class="hot-badge" *ngIf="item.hotItem === 'Yes'">✦ Radiant</span>
+        </div>
+        <div class="card-id">Sigil: {{ item.id }}</div>
+        <p>📁 {{ item.category }} | 📦 Qty: {{ item.quantity }}</p>
+        <p>💎 ¥{{ item.price }} | 🏭 {{ item.supplier }}</p>
+        <p>🌀 {{ item.stockStatus === 'In Stock' ? 'Abundant' : (item.stockStatus === 'Low Stock' ? 'Fading' : 'Void') }} | 📜 {{ item.comments || '—' }}</p>
+        <div class="card-actions">
+          <button class="edit" (click)="startEdit(item.id)">✧ Edit</button>
+          <button class="delete" (click)="deleteItem(item.id)">✖ Banish</button>
+        </div>
+      </div>
+      <div class="empty-state" *ngIf="displayItems.length === 0">
+        ⚡ No artifacts found in this realm.
+      </div>
+    </div>
+  </div>
+</div>

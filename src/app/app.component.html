@@ -1,0 +1,25 @@
+/**
+ * PROG2005 Part 2 - Aether Inventory
+ * Author: Boyuan_Liu
+ * Student ID: 24832410
+ */
+<nav class="navbar">
+  <div class="nav-container">
+    <h1 class="logo">✦ Aether Inventory</h1>
+    <ul class="nav-links">
+      <li><a routerLink="/" routerLinkActive="active">⌂ Nexus</a></li>
+      <li><a routerLink="/inventory" routerLinkActive="active">📋 Vault</a></li>
+      <li><a routerLink="/search" routerLinkActive="active">🔮 Oracle</a></li>
+      <li><a routerLink="/privacy" routerLinkActive="active">🛡️ Sanctum</a></li>
+      <li><a routerLink="/help" routerLinkActive="active">❄️ Guidance</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="footer">
+  <p>© 2026 Aether Inventory | Ethereal edition · ephemeral session storage</p>
+</footer>
